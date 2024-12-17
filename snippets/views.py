@@ -3,8 +3,23 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .models import Book, Author
+from accounts.views import User, Group
 from .serializers import AuthorSerializer, BookSerializer
+from accounts.serializers import UserSerializer, GroupSerializer
 from accounts.permissions import IsOwner
+from rest_framework import viewsets
+
+
+class AuthorViewSet(viewsets.ModelViewSet):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class BookViewSet(viewsets.ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class AuthorList(generics.ListCreateAPIView):
@@ -71,3 +86,15 @@ class BookDetail(generics.RetrieveUpdateDestroyAPIView):
 
         book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]  # Доступ только для аутентифицированных пользователей
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [IsAuthenticated]
