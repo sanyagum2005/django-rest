@@ -2,9 +2,21 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from .models import Book
-from .serializers import BookSerializer
+from .models import Book, Author
+from .serializers import AuthorSerializer, BookSerializer
 from accounts.permissions import IsOwner
+
+
+class AuthorList(generics.ListCreateAPIView):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    permission_classes = [IsAuthenticated]  # Доступ только для аутентифицированных пользователей
+
+
+class AuthorDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    permission_classes = [IsAuthenticated]
 
 class BookMixin:
     def get_object(self, pk):
@@ -25,6 +37,7 @@ class BookList(generics.ListCreateAPIView):
 
 
 class BookDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated, IsOwner]
 
